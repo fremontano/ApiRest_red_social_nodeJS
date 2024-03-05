@@ -23,6 +23,13 @@ app.use(express.urlencoded({ extended: true }));
 
 
 //Cargar configurar rutas
+const userRoutes = require('./routes/user');
+const publicationRoutes = require('./routes/publicaction');
+const followRoutes = require('./routes/follow');
+
+app.use('/api/', userRoutes);
+app.use('/api/', publicationRoutes);
+app.use('/api/', followRoutes);
 
 //ruta de prueba
 // Definir una ruta de ejemplo
