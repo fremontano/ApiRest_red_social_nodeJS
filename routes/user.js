@@ -2,11 +2,14 @@
 // routes/users.js
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/user');
+const UserControllers = require('../controllers/user');
 
 
 //definir rutas
-router.get('/user', userController.pruebaUser);
+router.get('/user', UserControllers.pruebaUser);
+router.post('/register', UserControllers.registerUsuarios);
+
+
 
 
 

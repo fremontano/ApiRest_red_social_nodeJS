@@ -2,6 +2,7 @@
 const connectToDatabase = require('./database/connection');
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config(); //Para leer nuestra variables de entorno
 
 
 //Conexion a la base de datos
@@ -11,7 +12,7 @@ console.log('API NODEJS para red social corriendo!!');
 
 //Crear Servidor node
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3001
 
 //Configurar Cors
 app.use(cors());
@@ -27,9 +28,9 @@ const userRoutes = require('./routes/user');
 const publicationRoutes = require('./routes/publicaction');
 const followRoutes = require('./routes/follow');
 
-app.use('/api/', userRoutes);
-app.use('/api/', publicationRoutes);
-app.use('/api/', followRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/publication', publicationRoutes);
+app.use('/api/follow', followRoutes);
 
 //ruta de prueba
 // Definir una ruta de ejemplo
