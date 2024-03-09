@@ -8,6 +8,10 @@ const UserControllers = require('../controllers/user');
 //definir rutas
 router.get('/user', UserControllers.pruebaUser);
 router.post('/register', UserControllers.register);
+router.post('/login', UserControllers.login);
+
+
+
 
 
 

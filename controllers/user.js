@@ -15,8 +15,6 @@ const pruebaUser = (req, res) => {
     });
 }
 
-
-
 //Registrar Usuarios
 const register = async (req, res) => {
     const { name, surname, nickname, email, password } = req.body;
@@ -65,7 +63,59 @@ const register = async (req, res) => {
     }
 };
 
-module.exports = register;
+
+//Ruta de login 
+const login = async (req, res) => {
+
+    try {
+        //Recoger los datos
+        const { email, password } = req.body;
+
+        //Verificar  si los campos necesarios están presentes
+        if (!email || !password) {
+            return res.status(400).send({
+                mensaje: 'Faltan datos por enviar'
+            });
+        }
+
+
+
+        // Buscar en la base de datos si el usuario existe
+        const user = await User.findOne({ email: email });
+
+        if (!user) {
+            return res.status(400).send({
+                mensaje: 'El usuario no existe'
+            });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        // Comprobar si la contraseña es correcta
+        if (!passwordMatch) {
+            return res.status(400).send({
+                mensaje: 'La contraseña o el email son incorrecta'
+            });
+        }
+        const { password: userPassword, ...userData } = user.toObject();
+
+        //Devolver los datos al usuario
+        //Tabien podemos comparar con bcrypt.compare();
+        return res.status(200).send({
+            status: 'success',
+            mensaje: 'Mensaje enviado desde: Controllador login.js',
+            user: userData
+        });
+
+    } catch (error) {
+        // Si hay algún error, devolver un mensaje de error
+        return res.status(500).send({
+            status: 'error',
+            mensaje: 'Hubo un error en el login'
+        });
+
+    }
+}
 
 
 
@@ -76,5 +126,6 @@ module.exports = register;
 //Exportar acciones
 module.exports = {
     pruebaUser,
-    register
+    register,
+    login
 }
