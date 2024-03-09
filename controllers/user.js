@@ -1,7 +1,9 @@
 //Importar dependencia y modulos
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
-const user = require('../models/user');
+
+
+
 
 
 
@@ -16,61 +18,55 @@ const pruebaUser = (req, res) => {
 
 
 //Registrar Usuarios
-const registerUsuarios = async (req, res) => {
-    //recoger los datos que llegan de la peticion
-    const params = req.body;
+const register = async (req, res) => {
+    const { name, surname, nickname, email, password } = req.body;
 
-    if (!params.name || !params.surname || !params.nickname || !params.email || !params.password) {
-        return res.status(400).json({
-            status: 'error',
-            error: 'Faltan datos por enviar',
+    if (!name || !surname || !nickname || !email || !password) {
+        return res.status(400).send({
+            mensaje: 'Faltan datos por enviar'
         });
     }
 
-
-    //Controlar usuario duplicados
     try {
-        const existingUsers = await User.find({
-            $or: [
-                { email: params.email.toLowerCase() },
-                { nickname: params.nickname.toLowerCase() }
-            ]
-        }).exec();
-
-        if (existingUsers && existingUsers.length > 0) {
-            return res.status(200).json({
-                status: 'success',
-                error: 'Ya existe un usuario con ese email o nickname'
+        // Verificar si ya existe un usuario con el mismo email o nickname
+        const existingUser = await User.findOne({ $or: [{ nickname: nickname }, { email: email }] });
+        if (existingUser) {
+            return res.status(400).send({
+                mensaje: 'Ya existe un usuario con el mismo email o nickname'
             });
         }
 
-        //Cifrar contraseña usuario
-        let hashedPassword = await bcrypt.hash(params.password, 10);
+        // Generar la sal y hashear la contraseña
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, salt);
 
-        params.password = hashedPassword;
+        // Crear el objeto de usuario para guardar en la base de datos
+        const user_to_save = new User({
+            name,
+            surname,
+            nickname,
+            email,
+            password: hashPassword
+        });
 
-        //Crear objeto usuario para guardar
-        let user_to_save = new User(params);
-        let save_user = await user_to_save.save();
+        // Guardar el usuario en la base de datos
+        await user_to_save.save();
 
-
-
-        //Devolver respuesta
         return res.status(200).json({
-            status: 'success',
-            message: 'Accion registro de usuario',
-            user_to_save: save_user
+            mensaje: 'Usuario registrado',
+            user_to_save
         });
 
     } catch (error) {
-        console.error('Error al guardar el documento:', error);
-
-        return res.status(500).json({
-            status: "Error",
-            messague: "Error en la consulta de usuarios",
+        console.error(error);
+        return res.status(500).send({
+            mensaje: 'Hubo un error al registrar el usuario'
         });
     }
 };
+
+module.exports = register;
+
 
 
 
@@ -80,7 +76,5 @@ const registerUsuarios = async (req, res) => {
 //Exportar acciones
 module.exports = {
     pruebaUser,
-    registerUsuarios
-
-
+    register
 }

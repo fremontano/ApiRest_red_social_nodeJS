@@ -5,21 +5,27 @@ const { Schema, model } = require('mongoose');
 const userSchema = Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        min: 7,
+        max: 244
     },
     surname: {
         type: String,
-        required: true
+        required: true,
+        min: 7,
+        max: 244
     },
 
     nickname: {
         type: String,
-        required: true
+        required: true,
+        min: 7,
+        max: 244
     },
 
     email: {
         type: String,
-        required: true
+        required: true,
     },
     password: {
         type: String,
@@ -43,4 +49,4 @@ const userSchema = Schema({
 });
 
 //devolver el models
-module.exports = model('User', userSchema, "users");
+module.exports = model('User', userSchema);

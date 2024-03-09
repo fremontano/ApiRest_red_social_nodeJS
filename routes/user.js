@@ -7,7 +7,7 @@ const UserControllers = require('../controllers/user');
 
 //definir rutas
 router.get('/user', UserControllers.pruebaUser);
-router.post('/register', UserControllers.registerUsuarios);
+router.post('/register', UserControllers.register);
 
 
 
