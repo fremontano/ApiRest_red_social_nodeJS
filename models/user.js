@@ -6,8 +6,8 @@ const userSchema = Schema({
     name: {
         type: String,
         required: true,
-        min: 7,
-        max: 244
+        min: 5,
+        max: 255
     },
     surname: {
         type: String,
@@ -26,10 +26,13 @@ const userSchema = Schema({
     email: {
         type: String,
         required: true,
+        min: 7,
+        max: 1024
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: 7
     },
 
     role: {
