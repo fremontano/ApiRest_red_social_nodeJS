@@ -1,8 +1,9 @@
 //Importar dependencia y modulos
 const bcrypt = require('bcrypt');
+// Inportar modelos
 const User = require('../models/user');
-
-
+// Importar servicios 
+const jwt = require('../services/jwt');
 
 
 
@@ -88,7 +89,7 @@ const login = async (req, res) => {
                 mensaje: 'El usuario no existe'
             });
         }
-
+        //Tabien podemos comparar con bcrypt.compare();
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         // Comprobar si la contraseña es correcta
@@ -97,15 +98,21 @@ const login = async (req, res) => {
                 mensaje: 'La contraseña o el email son incorrecta'
             });
         }
+
+
         const { password: userPassword, ...userData } = user.toObject();
+        // Generar el token JWT usando la función createToken
+        const accessToken = createToken(user);
+
 
         //Devolver los datos al usuario
-        //Tabien podemos comparar con bcrypt.compare();
         return res.status(200).send({
             status: 'success',
-            mensaje: 'Mensaje enviado desde: Controllador login.js',
-            user: userData
+            mensaje: 'identificaion correcta bienvenido',
+            user: userData,
+            accessToken: accessToken
         });
+
 
     } catch (error) {
         // Si hay algún error, devolver un mensaje de error
@@ -113,8 +120,8 @@ const login = async (req, res) => {
             status: 'error',
             mensaje: 'Hubo un error en el login'
         });
-
     }
+
 }
 
 
