@@ -17,13 +17,13 @@ const createToken = (user) => {
         image: user.image,
         iat: moment().unix(),
         exp: moment().add(25, 'days').unix(),
-    }
-    // Devolver jwt token codificado 
+    };
+    console.log('Payload:', payload);  // Para depuración, elimina esto en producción
     return jwt.encode(payload, secret);
-}
+};
 
 
-// Exportar funciones
+
 module.exports = {
     secret,
     createToken,
