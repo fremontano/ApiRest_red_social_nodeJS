@@ -36,7 +36,8 @@ app.use('/api/follow', followRoutes);
 // Definir una ruta de ejemplo
 app.get('/ruta-prueba', (req, res) => {
     res.status(200).json({
-        mensaje: 'Bienvenido a la API de Red Social'
+        mensaje: 'Bienvenido a la API de Red Social',
+        usuario: req.user
     })
 });
 

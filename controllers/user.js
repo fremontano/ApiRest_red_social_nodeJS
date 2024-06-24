@@ -67,21 +67,15 @@ const register = async (req, res) => {
 
 //Ruta de login 
 const login = async (req, res) => {
-
     try {
-        //Recoger los datos
         const { email, password } = req.body;
 
-        //Verificar  si los campos necesarios están presentes
         if (!email || !password) {
             return res.status(400).send({
                 mensaje: 'Faltan datos por enviar'
             });
         }
 
-
-
-        // Buscar en la base de datos si el usuario existe
         const user = await User.findOne({ email: email });
 
         if (!user) {
@@ -89,40 +83,32 @@ const login = async (req, res) => {
                 mensaje: 'El usuario no existe'
             });
         }
-        //Tabien podemos comparar con bcrypt.compare();
+
         const passwordMatch = await bcrypt.compare(password, user.password);
 
-        // Comprobar si la contraseña es correcta
         if (!passwordMatch) {
             return res.status(400).send({
-                mensaje: 'La contraseña o el email son incorrecta'
+                mensaje: 'La contraseña o el email son incorrectos'
             });
         }
 
-
         const { password: userPassword, ...userData } = user.toObject();
-        // Generar el token JWT usando la función createToken
-        const accessToken = createToken(user);
+        const accessToken = jwt.createToken(userData);
 
-
-        //Devolver los datos al usuario
         return res.status(200).send({
             status: 'success',
-            mensaje: 'identificaion correcta bienvenido',
+            mensaje: 'Identificación correcta, bienvenido',
             user: userData,
             accessToken: accessToken
         });
-
-
     } catch (error) {
-        // Si hay algún error, devolver un mensaje de error
+        console.error(error);
         return res.status(500).send({
             status: 'error',
             mensaje: 'Hubo un error en el login'
         });
     }
-
-}
+};
 
 
 
